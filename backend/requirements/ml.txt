@@ -1,0 +1,3 @@
+# LSTM training and inference (phase 2 of the anomaly engine)
+-r api.txt
+torch>=2.3

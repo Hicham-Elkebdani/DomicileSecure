@@ -1,0 +1,32 @@
+# Template unit: one instance per camera.
+#   systemctl enable --now domicilesecure-worker@entree
+# reads /opt/domicilesecure/app/backend/workers/entree.env (WORKER_CAMERA_ID, WORKER_CAMERA_SOURCE...)
+[Unit]
+Description=DomicileSecure vision worker (camera %i)
+After=network-online.target domicilesecure-api.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=domicile
+Group=domicile
+WorkingDirectory=/opt/domicilesecure/app/backend
+# Shared settings come from backend/.env (read by the app); per-camera values override them.
+EnvironmentFile=/opt/domicilesecure/app/backend/workers/%i.env
+ExecStart=/opt/domicilesecure/app/backend/.venv/bin/python -m worker
+Restart=always
+RestartSec=5
+# Stop gracefully: the worker flushes buffered observations on SIGTERM.
+KillSignal=SIGTERM
+TimeoutStopSec=20
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/domicilesecure/app/backend
+# Allow access to local USB cameras (/dev/video*)
+SupplementaryGroups=video
+
+[Install]
+WantedBy=multi-user.target

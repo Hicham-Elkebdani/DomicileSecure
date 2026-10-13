@@ -1,0 +1,28 @@
+[Unit]
+Description=DomicileSecure API (FastAPI)
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=domicile
+Group=domicile
+WorkingDirectory=/opt/domicilesecure/app/backend
+# Settings are read from backend/.env by the application itself (pydantic-settings).
+# One process: the WebSocket hub and the scheduler are in-process (see docs/architecture.md §6).
+ExecStart=/opt/domicilesecure/app/backend/.venv/bin/uvicorn app.main:create_app --factory \
+    --host 127.0.0.1 --port 8000 --proxy-headers --forwarded-allow-ips=127.0.0.1 --no-access-log
+Restart=always
+RestartSec=3
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/domicilesecure/app/backend
+CapabilityBoundingSet=
+RestrictSUIDSGID=true
+
+[Install]
+WantedBy=multi-user.target

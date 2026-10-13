@@ -1,0 +1,21 @@
+# Core API (FastAPI + database + security + notifications)
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30
+pydantic>=2.7,<3
+pydantic-settings>=2.3
+sqlalchemy[asyncio]>=2.0,<3
+aiosqlite>=0.20
+asyncpg>=0.29
+alembic>=1.13
+pyjwt>=2.8
+pwdlib[argon2]>=0.2
+python-multipart>=0.0.9
+email-validator>=2.1
+numpy>=1.26
+apscheduler>=3.10,<4
+pywebpush>=2.0
+cryptography>=42  # VAPID key generation (scripts/generate_secrets.py)
+httpx>=0.27
+tzdata>=2024.1
+# Used by the API only to decode uploaded photos and compute face embeddings at enrollment.
+opencv-python>=4.10,<6
